@@ -74,7 +74,7 @@ export const localCommand = async function (getState, pactCode, envData) {
     nonce: creationTime(),
     meta: {
       chainId: kadenaInfo.chainId,
-      gasLimit: kadenaInfo.gasLimit,
+      gasLimit: 1000000,
       gasPrice: kadenaInfo.gasPrice,
       sender: kadenaInfo.account,
       ttl: kadenaInfo.ttl,
