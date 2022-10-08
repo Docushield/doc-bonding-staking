@@ -26,21 +26,6 @@ function App() {
     event.preventDefault();
   }
 
-  // let bondUI = (
-  //   <div className="grow flex flex-row space-x-2 text-left">
-  //     <div className="flex-1 flex flex-col justify-between space-y-2">
-  //       <Expanded>VALUE: 100,000</Expanded>
-  //       <Expanded>COLLECTION: DOC-BOND</Expanded>
-  //       <Expanded>NFT ID: DOC-BOND</Expanded>
-  //     </div>
-  //     <div className="flex-1 flex flex-col justify-around space-y-2">
-  //       <span>OWNED: 3</span>
-  //       <span>TOTAL VALUE: $300,000 DOC</span>
-  //       <span>BOND MATURES: 2023-10-01</span>
-  //     </div>
-  //   </div>
-  // );
-
   let claimUI = (
     <div className="flex-1 flex flex-col justify-between place-items-center space-y-2">
       <span className="text-xl font-bold">PENDING REWARDS: 12.012345 </span>
