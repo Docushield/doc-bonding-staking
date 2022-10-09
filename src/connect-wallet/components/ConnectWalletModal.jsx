@@ -39,7 +39,7 @@ function ConnectWalletModal() {
           onClick={connectXWalletClicked}
           />
         <CustomButton
-          text="ZELCORE"
+          text="ZELCORE (COMING SOON)"
           onClick={connectZelcoreClicked}
           />
       </div>
