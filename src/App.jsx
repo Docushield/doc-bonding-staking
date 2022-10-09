@@ -42,7 +42,7 @@ function App() {
     <div className="w-full flex flex-col items-center bg-slate-800">
       <div className="w-full max-w-5xl h-min min-h-screen flex flex-col text-white text-center bg-slate-800">
         <ToastContainer
-          position="bottom-center"
+          position="bottom-right"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}

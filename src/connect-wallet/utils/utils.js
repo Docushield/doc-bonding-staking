@@ -1,9 +1,17 @@
 import Pact from 'pact-lang-api';
+import { toast } from 'react-toastify';
 
 export const creationTime = () => String(Math.round(new Date().getTime() / 1000) - 10);
 
-export const createPactCommand = (getState, pactCode, envData) => {
+export const createPactCommand = (getState, pactCode, envData, caps=[]) => {
   let kadenaSliceState = getState().kadenaInfo;
+  let signer = {
+    pubKey: kadenaSliceState.pubKey
+  }
+  if (caps.length > 0) {
+    signer['caps'] = caps;
+  }
+
   return {
     networkId: kadenaSliceState.networkId,
     payload: {
@@ -12,11 +20,7 @@ export const createPactCommand = (getState, pactCode, envData) => {
         code: pactCode,
       }
     },
-    signers: [
-      {
-        pubKey: kadenaSliceState.pubKey
-      }
-    ],
+    signers: [signer],
     meta: {
       chainId: kadenaSliceState.chainId,
       gasLimit: kadenaSliceState.gasLimit,
@@ -28,7 +32,7 @@ export const createPactCommand = (getState, pactCode, envData) => {
   }
 }
 
-export const createSigningCommand = (getState, pactCode, envData) => {
+export const createSigningCommand = (getState, pactCode, envData, caps=[]) => {
   let kadenaSliceState = getState().kadenaInfo;
   return {
     pactCode: pactCode,
@@ -40,6 +44,7 @@ export const createSigningCommand = (getState, pactCode, envData) => {
     gasPrice: kadenaSliceState.gasPrice,
     signingPubKey: kadenaSliceState.pubKey,
     ttl: kadenaSliceState.ttl,
+    caps: caps,
   }
 }
 
@@ -59,8 +64,33 @@ export const signCommand = async function (getState, signingCmd) {
     return cmd.signedCmd;
   }
   else {
-    toast.error(`Failed to sign: ${cmd}`);
+    toast.error(`Failed to sign.`);
   }
+}
+
+export const sendCommand = async function(getState, signedCmd) {
+  let kadenaInfo = getState().kadenaInfo;
+  // console.log(signedCmd);
+  // let req = {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   method: 'POST',
+  //   body: JSON.stringify({
+  //     "cmds": [signedCmd]
+  //   }),
+  // }
+  // console.log(kadenaInfo.network);
+  // console.log(req);
+  // try {
+  //   let res = await fetch(`${kadenaInfo.network}/api/v1/send`, req);
+  //   return res;
+  // }
+  // catch (e) {
+  //   console.log('Error');
+  //   console.log(e);
+  // }
+  return await Pact.wallet.sendSigned(signedCmd, kadenaInfo.network);
 }
 
 export const localCommand = async function (getState, pactCode, envData) {
@@ -83,6 +113,11 @@ export const localCommand = async function (getState, pactCode, envData) {
   }
   let res = await Pact.fetch.local(cmd, kadenaInfo.network);
   return res;
+}
+
+export const listen = async function (getState, txId) {
+  let kadenaInfo = getState().kadenaInfo;
+  return await Pact.fetch.listen({ listen: txId }, kadenaInfo.network);
 }
 
 export const mkReq = function (cmd) {

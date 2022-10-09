@@ -17,8 +17,7 @@ export const stakingSlice = createSlice({
 });
 
 export const { 
-  setPoolData, 
-  setUserData, 
+  setPoolData
 } = stakingSlice.actions
 
 export const initPoolData = () => {
