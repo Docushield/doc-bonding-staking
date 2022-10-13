@@ -1,7 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { disconnectXWallet } from '../../connect-wallet/redux/kadenaSlice';
-import { showModal } from '../../connect-wallet/redux/modalSlice';
-import reduceToken from '../../connect-wallet/utils/reduceToken';
 import CustomButton from '../CustomButton'
 
 function TileWithAction(props) {

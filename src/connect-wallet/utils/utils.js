@@ -1,5 +1,6 @@
 import Pact from 'pact-lang-api';
 import { toast } from 'react-toastify';
+import { X_WALLET, ZELCORE } from '../redux/kadenaSlice';
 
 export const creationTime = () => String(Math.round(new Date().getTime() / 1000) - 10);
 
@@ -50,22 +51,31 @@ export const createSigningCommand = (getState, pactCode, envData, caps=[]) => {
 
 export const signCommand = async function (getState, signingCmd) {
   let networkId = getState().kadenaInfo.networkId;
-  let req = {
-    method: "kda_requestSign",
-    networkId: networkId,
-    data: {
-        networkId: networkId,
-        signingCmd: signingCmd
+  let provider = getState().kadenaInfo.provider;
+
+  if (provider === X_WALLET) {
+    let req = {
+      method: "kda_requestSign",
+      networkId: networkId,
+      data: {
+          networkId: networkId,
+          signingCmd: signingCmd
+      }
+    }
+    var cmd = await kadena.request(req);
+
+    if (cmd.status === "success") {
+      return cmd.signedCmd;
+    }
+    else {
+      toast.error(`Failed to sign.`);
     }
   }
-  var cmd = await kadena.request(req);
-
-  if (cmd.status === "success") {
-    return cmd.signedCmd;
+  else if (provider === ZELCORE) {
+    console.log('Zelcore');
+    return await Pact.wallet.sign(signingCmd);
   }
-  else {
-    toast.error(`Failed to sign.`);
-  }
+  
 }
 
 export const sendCommand = async function(getState, signedCmd) {

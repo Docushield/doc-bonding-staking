@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "../../components/CustomButton";
-import { connectXWallet } from "../redux/kadenaSlice";
+import { connectXWallet, connectZelcore } from "../redux/kadenaSlice";
 import { hideModal } from "../redux/modalSlice";
 
 function ConnectWalletModal() {
@@ -13,11 +13,11 @@ function ConnectWalletModal() {
   }
 
   const connectXWalletClicked = () => {
-    dispatch(connectXWallet())
+    dispatch(connectXWallet());
   }
 
   const connectZelcoreClicked = () => {
-
+    dispatch(connectZelcore());
   }
   
   if (!shouldShow) {

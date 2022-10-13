@@ -28,7 +28,7 @@ export const userSlice = createSlice({
   },
 })
 
-export const { setBondsInWallet, setOwnedBonds, setPoolData } = userSlice.actions
+export const { setBondsInWallet, setOwnedBonds, setPoolData, updateStakedNfts } = userSlice.actions
 
 export const initUserData = () => {
   return async function init(dispatch, getState) {
@@ -48,7 +48,7 @@ export const initUserData = () => {
       dispatch(userSlice.actions.setBondsInWallet(bondsInWallet));
     }
     else {
-      toast.error('User has no bonds.');
+      dispatch(userSlice.actions.setBondsInWallet(0));
     }
     
     // Get staked tokens
@@ -71,7 +71,7 @@ export const initUserData = () => {
       // console.log(poolData);
     }
     else {
-      toast.error('User has nothing staked...?');
+      dispatch(userSlice.actions.setStakedNfts({}));
     }
 
     // Sum up total owned
@@ -126,20 +126,23 @@ export const stake = (pool, amount) => {
     let signedCmd = await signCommand(getState, signingCommand);
     // console.log(signedCmd);
     var result = await sendCommand(getState, signedCmd);
-    // console.log(result);
+    console.log(result);
     
     let plurality = amount === 1 ? 'bond' : 'bonds'
     const id = toast.loading(<TitleMessageRender title={`Staking ${amount} ${plurality}.`} message={`TX ID: ${result.requestKeys[0]}`}/>, { type: toast.TYPE.INFO });
     result = await listen(getState, result.requestKeys[0]);
-    console.log(result);
+    // console.log(result);
 
     if (result.result.status === "success") {
+      let currBondsInWallet = getState().userInfo.bondsInWallet;
       let stakedNfts = getState().userInfo.stakedNfts;
       var currStaked = 0;
       if (pool in stakedNfts) {
         currStaked = stakedNfts[pool]['amount'];
       }
-      dispatch(userSlice.actions.updateStakedNfts({ 'pool': pool, prop: 'amount', value: currStaked + amount }))
+      
+      dispatch(userSlice.actions.updateStakedNfts({ 'pool': pool, prop: 'amount', value: currStaked + amount }));
+      dispatch(userSlice.actions.setBondsInWallet(currBondsInWallet - amount));
       toast.update(id, { render: `Successfully staked ${amount} ${plurality}`, type: toast.TYPE.SUCCESS, isLoading: false, autoClose: 5000 });
     }
     else {
@@ -214,7 +217,7 @@ export const claimAll = () => {
       ${claimUnlocked}
     ]
     `;
-    console.log(pactCode);
+    // console.log(pactCode);
     var envData = {
       // "ks": { "keys": [pubKey], "pred": "keys-all" }
     }
@@ -247,7 +250,7 @@ export const claimAll = () => {
 
     const id = toast.loading(<TitleMessageRender title="Claiming tokens." message={`TX ID: ${result.requestKeys[0]}`}/>, { type: toast.TYPE.INFO});
     result = await listen(getState, result.requestKeys[0]);
-    console.log(result);
+    // console.log(result);
 
     if (result.result.status === "success") {
       // let currStaked = getState().userInfo.stakedNfts[pool]['amount'];
