@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import modalSlice from "./modalSlice";
-import kadenaSlice from "./kadenaSlice";
+import modalSlice from "../connect-wallet/redux/modalSlice";
+import kadenaSlice from "../connect-wallet/redux/kadenaSlice";
 import bondingSlice from "./bondingSlice";
 import stakingSlice from "./stakingSlice";
 import userSlice from "./userSlice";

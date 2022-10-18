@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify';
-import { localCommand } from '../utils/utils';
+import { localCommand } from '../connect-wallet/utils/utils';
 
 
 export const stakingSlice = createSlice({

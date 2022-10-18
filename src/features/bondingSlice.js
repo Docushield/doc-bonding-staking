@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify';
-import { createPactCommand, createSigningCommand, localCommand, signCommand } from '../utils/utils';
+import { createPactCommand, createSigningCommand, localCommand, signCommand } from '../connect-wallet/utils/utils';
 
 export const bondingSlice = createSlice({
   name: 'bondingContract',

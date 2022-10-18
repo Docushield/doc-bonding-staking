@@ -1,9 +1,9 @@
 import Pact from 'pact-lang-api';
 import { createSlice } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify';
-import { createPactCommand, createSigningCommand, listen, localCommand, sendCommand, signCommand } from '../utils/utils';
-import TxRenderer from '../../components/TitleMessageRender';
-import TitleMessageRender from '../../components/TitleMessageRender';
+import { createPactCommand, createSigningCommand, listen, localCommand, sendCommand, signCommand } from '../connect-wallet/utils/utils';
+import TxRenderer from '../components/TitleMessageRender';
+import TitleMessageRender from '../components/TitleMessageRender';
 
 export const userSlice = createSlice({
   name: 'userInfo',
