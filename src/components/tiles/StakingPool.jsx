@@ -97,7 +97,7 @@ function StakingPool(props) {
               <span>You may stake and unstake freely before the lock time. Time until lock:</span>
               <span className="text-xl font-bold">{hasStarted ? 'POOL LOCKED' : countdown}</span>
               <span>After the pool locks, <b className="text-red-400">you cannot unstake your bond until it has matured</b>, but you will get a bonus!</span>
-              <span className="text-xl font-bold">BONUS: ${'lock-bonus' in pool ? pool['lock-bonus'] : 0} DOC</span>
+              <span className="text-xl font-bold">BONUS: {'lock-bonus' in pool ? pool['lock-bonus'] : 0} $DOC</span>
             </div>
             :
             <div className="flex-1 flex flex-col justify-start space-y-4">
