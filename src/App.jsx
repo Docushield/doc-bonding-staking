@@ -23,16 +23,20 @@ function App() {
   const dispatch = useDispatch();
   const account = useSelector(state => state.kadenaInfo.account);
 
-  async function init() {
-    // Init all of our data
+  async function initData() {
     await dispatch(initBondingData());
     await dispatch(initPoolData());
+  }
+  initData();
+
+  async function initUser() {
+    // Init all of our data
     await dispatch(initUserData());
   }
 
   useEffect(() => {
     if (account !== '') {
-      init();
+      initUser();
     }
   }, [account]);
 
