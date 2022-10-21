@@ -19,6 +19,7 @@ import MyBonds from './components/tiles/MyBonds';
 
 
 function App() {
+  
   const dispatch = useDispatch();
   const account = useSelector(state => state.kadenaInfo.account);
 
