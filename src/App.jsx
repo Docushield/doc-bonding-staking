@@ -58,13 +58,6 @@ function App() {
         />
         <ConnectWalletModal/>
         <Navbar/>
-        
-        {account === '' ? (
-          <div className="grow flex flex-col justify-center text-3xl">
-            <p>WELCOME TO $DOC BONDING AND STAKING</p>
-            <p>PLEASE CONNECT YOUR WALLET TO CONTINUE</p>
-          </div>
-        ) : (
           <div className="flex flex-col">
             <FlexRow>
               <MyBonds/>
@@ -84,7 +77,6 @@ function App() {
                 poolName={import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME}/>
             </FlexRow>
           </div>
-        )}
       </div>
     </div>
     

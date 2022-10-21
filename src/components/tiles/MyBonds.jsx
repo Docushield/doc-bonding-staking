@@ -9,6 +9,7 @@ function MyBonds(props) {
   const UNLOCKED_POOL_NAME = import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME;
 
   const dispatch = useDispatch();
+  const account = useSelector(state => state.kadenaInfo.account);
   const bondValue = useSelector(state => state.bondingContract.bondValue);
   const ownedBonds = useSelector(state => state.userInfo.ownedBonds);
 
@@ -35,13 +36,15 @@ function MyBonds(props) {
       title="MY BONDS"
       className={props.className}
     >
+      {account === '' ? <span>PLEASE CONNECT YOUR WALLET TO SEE YOUR INFO</span> 
+      :
       <div className="grow flex flex-row space-x-2 justify-around text-left">
         <span>OWNED: {ownedBonds}</span>
         <span>TOTAL VALUE: ${ownedBonds * bondValue} DOC</span>
         <span>UNSTAKED: {bondsInWallet}</span>
         <span>LOCKED POOL: {lockedPoolAmount}</span>
         <span>UNLOCKED POOL: {unlockedPoolAmount}</span>
-      </div>
+      </div>}
     </Tile>
   );
 }
