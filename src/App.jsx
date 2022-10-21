@@ -19,8 +19,6 @@ import MyBonds from './components/tiles/MyBonds';
 
 
 function App() {
-  console.log('ENV: ', import.meta.env.VITE_TEST);
-
   const dispatch = useDispatch();
   const account = useSelector(state => state.kadenaInfo.account);
 
