@@ -36,14 +36,14 @@ function MyBonds(props) {
       title="MY BONDS"
       className={props.className}
     >
-      {account === '' ? <span>PLEASE CONNECT YOUR WALLET TO SEE YOUR INFO</span> 
+      {account === '' ? <span className="text-xl"><b>PLEASE CONNECT YOUR WALLET TO SEE YOUR INFO</b></span> 
       :
-      <div className="grow flex flex-row space-x-2 justify-around text-left">
-        <span>OWNED: {ownedBonds}</span>
-        <span>TOTAL VALUE: ${ownedBonds * bondValue} DOC</span>
-        <span>UNSTAKED: {bondsInWallet}</span>
-        <span>LOCKED POOL: {lockedPoolAmount}</span>
-        <span>UNLOCKED POOL: {unlockedPoolAmount}</span>
+      <div className="grow flex flex-row gap-2 justify-around text-left text-xl">
+        <span><b>OWNED: {ownedBonds}</b></span>
+        <span><b>TOTAL VALUE: ${ownedBonds * bondValue} DOC</b></span>
+        <span><b>UNSTAKED: {bondsInWallet}</b></span>
+        <span><b>LOCKED POOL: {lockedPoolAmount}</b></span>
+        <span><b>UNLOCKED POOL: {unlockedPoolAmount}</b></span>
       </div>}
     </Tile>
   );
