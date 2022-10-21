@@ -110,7 +110,10 @@ function StakingPool(props) {
           {!isLockedPool || !hasStarted ? 
             <div className="flex-1 flex flex-col justify-between space-y-2">
               <div className="flex-1 flex flex-col justify-between space-y-2">
-                <span className="text-xl font-bold">Currently in Wallet: {bondsInWallet}</span>
+                <div className="flex flex-row justify-between gap-2">
+                  <span className="text-xl font-bold">Currently in Wallet: {bondsInWallet}</span>
+                  <span className="text-xl font-bold">{pool['apy'] * 100}% APY</span>
+                </div>
                 <form onSubmit={stakeNfts}>
                   <label>
                     Stake Amount:
