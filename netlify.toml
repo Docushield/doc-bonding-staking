@@ -1,0 +1,5 @@
+[context.production]
+  command = "vite build --mode production"
+
+[context.staging]
+  command = "vite build --mode staging"
