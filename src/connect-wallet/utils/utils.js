@@ -75,7 +75,6 @@ export const signCommand = async function (getState, signingCmd) {
     console.log('Zelcore');
     return await Pact.wallet.sign(signingCmd);
   }
-  
 }
 
 export const sendCommand = async function(getState, signedCmd) {
@@ -100,7 +99,12 @@ export const sendCommand = async function(getState, signedCmd) {
   //   console.log('Error');
   //   console.log(e);
   // }
-  return await Pact.wallet.sendSigned(signedCmd, kadenaInfo.network);
+  try {
+    return await Pact.wallet.sendSigned(signedCmd, kadenaInfo.network);
+  }
+  catch (e) {
+    toast.error(`Error: ${e}`);
+  }
 }
 
 export const localCommand = async function (getState, pactCode, envData) {

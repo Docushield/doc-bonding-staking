@@ -42,8 +42,10 @@ function App() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      
       <div className="w-full max-w-5xl h-min min-h-screen flex flex-col text-white text-center">
+        <div className="fixed left-2 bottom-2 rounded-md bg-slate-800 py-1 px-2">
+          <span className="text-sm">Chain 8</span>
+        </div>
         <div className="fixed left-0 top-0 min-h-screen min-w-full -z-10">
           <video autoPlay muted playsInline loop className="object-fill h-screen w-screen">
             <source src={backgroundVideo} type="video/mp4"/>
