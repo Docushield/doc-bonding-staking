@@ -21,10 +21,10 @@ function Navbar() {
   return (
     <nav className="w-full flex flex-row justify-between place-items-center p-4 h-40">
       <div className="relative">
-        <span className="text-7xl font-medium">
+        <span className="text-7xl font-extrabold font-doc">
           $DOC
         </span>
-        <div className="absolute -bottom-6 -right-14 -rotate-12">
+        <div className="absolute -bottom-6 -right-24 -rotate-12">
           <span className="text-6xl font-cursive text-red-500">
             Staking
           </span>
@@ -36,9 +36,6 @@ function Navbar() {
           onClick={account === '' ? openModal : disconnect}/>
         {account !== '' && <span>{reduceToken(account)}</span>}
       </div>
-      
-      
-      
     </nav>
   )
 }

@@ -7,6 +7,8 @@ module.exports = {
     extend: {
       fontFamily: {
         cursive: ["CURSIVE"],
+        cursive: ["DOC"],
+        cursive: ["STAKING"],
       },
     },
   },
