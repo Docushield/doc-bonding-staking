@@ -103,7 +103,7 @@ export const sendCommand = async function(getState, signedCmd) {
     return await Pact.wallet.sendSigned(signedCmd, kadenaInfo.network);
   }
   catch (e) {
-    toast.error(`Error: ${e}`);
+    toast.error(`Error: ${e}. Do you have funds on chain 8?`);
   }
 }
 
