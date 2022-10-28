@@ -3,3 +3,6 @@
 
 [context.staging]
   command = "vite build --mode staging"
+
+[context.dev]
+  command = "vite build --mode dev"
