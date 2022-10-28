@@ -82,7 +82,7 @@ function App() {
             </FlexRow>
             <FlexRow>
             <StakingPool 
-                title="UNLOCKED STAKING"
+                title="UNLOCKED STAKING" 
                 poolName={[
                   import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME, 
                   import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
