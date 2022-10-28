@@ -23,7 +23,10 @@ export const userSlice = createSlice({
       state.stakedNfts = action.payload;
     },
     updateStakedNfts: (state, action) => {
-      state.stakedNfts[action.payload.pool][action.payload.prop] = action.payload.value;
+      let pool = action.payload.pool;
+      if (pool in state.stakedNfts) {
+        state.stakedNfts[pool][action.payload.prop] = action.payload.value;
+      }
     },
   },
 })
@@ -228,11 +231,34 @@ export const unstake = (pools, amount) => {
 
     if (result.result.status === "success") {
       let stakedNfts = getState().userInfo.stakedNfts;
-      var currStaked = 0;
-      if (pool in stakedNfts) {
-        currStaked = stakedNfts[pool]['amount'];
+      var a = amount;
+      for (var i = 0; i < pools.length; i++) {
+        // If the pool doesn't have anything staked in it (doens't exist) skip it
+        if (!pools[i] in stakedNfts) {
+          continue;
+        }
+
+        // If this pool has nothing staked, skip it, save some gas
+        let poolAmount = stakedNfts[pools[i]].amount;
+        if (poolAmount == 0) {
+          continue;
+        }
+
+        // If it does have something staked, then we unstake up to that amount
+        let toUnstake = Math.min(a, poolAmount);
+        a -= toUnstake;
+        dispatch(userSlice.actions.updateStakedNfts({ 
+          'pool': pools[i], 
+          prop: 'amount', 
+          value: poolAmount - toUnstake 
+        }));
+
+        // If we have counted up everything to unstake, we are good to go.
+        if (a == 0) {
+          break;
+        }
       }
-      dispatch(userSlice.actions.updateStakedNfts({ 'pool': pool, prop: 'amount', value: currStaked - amount }))
+      
       toast.update(id, { render: `Successfully unstaked ${amount} ${plurality}`, type: toast.TYPE.SUCCESS, isLoading: false, autoClose: 5000 });
     }
     else {

@@ -56,7 +56,7 @@ function StakingPool(props) {
         // have info
         if (stakedNftInfo
           && Object.entries(stakedNftInfo).length === 0) {
-          stakedNftInfo = userStakedNfts[POOL_NAMES[i]];
+          stakedNftInfo = JSON.parse(JSON.stringify(userStakedNfts[POOL_NAMES[i]]));
         }
         else { // Otherwise add the amount and the bonus
           stakedNftInfo.amount += userStakedNfts[POOL_NAMES[i]].amount;
