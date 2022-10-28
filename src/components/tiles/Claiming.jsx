@@ -39,9 +39,12 @@ function Claiming(props) {
 
   function getClaimableTokens() {
     var claimable = 0.0;
-    let lockedPool = import.meta.env.VITE_STAKING_POOL_LOCKED_NAME;
-    let unlockedPool = import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME;
-    let pools = [lockedPool, unlockedPool];
+    let pools = [
+      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
+      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
+      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
+      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
+    ];
     for (var pool in pools) {
       if (pool in userStakedNfts) {
         let apy = userStakedNfts[lockedPool]['apy'];

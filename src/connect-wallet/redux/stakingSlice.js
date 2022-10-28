@@ -31,9 +31,12 @@ export const initPoolData = () => {
       let data = result.result.data;
       // console.log(data);
       var poolInfo = {}
-      let lockedPool = import.meta.env.VITE_STAKING_POOL_LOCKED_NAME;
-      let unlockedPool = import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME;
-      let poolNames = [lockedPool, unlockedPool];
+      let poolNames = [
+        import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
+        import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
+        import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
+        import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
+      ];
       for (var poolName of poolNames) {
         for (var [_, value] of Object.entries(data)) {
           if (value['pool-name'] === poolName) {

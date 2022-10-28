@@ -75,12 +75,18 @@ function App() {
             <FlexRow>
               <StakingPool 
                 title="LOCKED STAKING"
-                poolName={import.meta.env.VITE_STAKING_POOL_LOCKED_NAME}/>
+                poolName={[
+                  import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
+                  import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2
+                ]}/>
             </FlexRow>
             <FlexRow>
             <StakingPool 
                 title="UNLOCKED STAKING"
-                poolName={import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME}/>
+                poolName={[
+                  import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME, 
+                  import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
+                ]}/>
             </FlexRow>
           </div>
       </div>

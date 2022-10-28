@@ -9,7 +9,7 @@ import { stake, unstake } from '../../connect-wallet/redux/userSlice';
 
 
 function StakingPool(props) {
-  const POOL_NAME = props.poolName;
+  const POOL_NAMES = props.poolName;
 
   var timer
   const [time, setTime] = useState(Date.now());
@@ -28,7 +28,8 @@ function StakingPool(props) {
 
   useEffect(() => {
     // console.log(poolData);
-    let pd = poolData[POOL_NAME];
+    let pd = poolData[POOL_NAMES[1]];
+    console.log(pd);
     if (!pd) {
       return;
     }
@@ -46,7 +47,24 @@ function StakingPool(props) {
   }, [pool]);
 
   useEffect(() => {
-    let stakedNftInfo = userStakedNfts[POOL_NAME];
+    var stakedNftInfo = {};
+    for (var i = 0; i < POOL_NAMES.length; i++) {
+      // If the pool exists in the user's staked nfts
+      if (userStakedNfts[POOL_NAMES[i]] 
+        && Object.entries(userStakedNfts[POOL_NAMES[i]]).length > 0) {
+        // If the we have no staked info, copy the first pool we find that does
+        // have info
+        if (stakedNftInfo
+          && Object.entries(stakedNftInfo).length === 0) {
+          stakedNftInfo = userStakedNfts[POOL_NAMES[i]];
+        }
+        else { // Otherwise add the amount and the bonus
+          stakedNftInfo.amount += userStakedNfts[POOL_NAMES[i]].amount;
+          stakedNftInfo.bonus += userStakedNfts[POOL_NAMES[i]].bonus;
+        }
+      }
+    }
+
     setStakedNftInfo(stakedNftInfo || {});
   }, [userStakedNfts]);
 
@@ -69,7 +87,7 @@ function StakingPool(props) {
       toast.error("Can't stake 0 or a negative number")
     }
     else {
-      dispatch(stake(POOL_NAME, amount));
+      dispatch(stake(POOL_NAMES[0], amount));
     }
   }
 
@@ -81,7 +99,7 @@ function StakingPool(props) {
       toast.error("Can't unstake 0 or a negative number")
     }
     else {
-      dispatch(unstake(POOL_NAME, amount));
+      dispatch(unstake(POOL_NAMES, amount));
     }
   }
 

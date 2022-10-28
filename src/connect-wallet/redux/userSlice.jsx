@@ -75,9 +75,12 @@ export const initUserData = () => {
     }
 
     // Sum up total owned
-    let lockedPool = import.meta.env.VITE_STAKING_POOL_LOCKED_NAME;
-    let unlockedPool = import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME;
-    let pools = [lockedPool, unlockedPool];
+    let pools = [
+      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
+      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
+      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
+      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
+    ];
     var totalBonds = bondsInWallet;
     for (var poolName of pools) {
       if (poolName in stakedNfts) {
@@ -92,6 +95,12 @@ export const initUserData = () => {
 
 export const stake = (pool, amount) => {
   return async function init(dispatch, getState) {
+    var bondsInWallet = getState().userInfo.bondsInWallet;
+    if (bondsInWallet < amount) {
+      toast.error('You cannot stake more than you have in your wallet')
+      return;
+    }
+
     // Get account information and create the signing command
     let account = getState().kadenaInfo.account;
     let pubKey = getState().kadenaInfo.pubKey;
@@ -151,27 +160,58 @@ export const stake = (pool, amount) => {
   }
 }
 
-export const unstake = (pool, amount) => {
+export const unstake = (pools, amount) => {
   return async function init(dispatch, getState) {
+    // Get staked amount and throw an error if they try to
+    // unstake more than they have staked in these pools
+    var stakedAmount = 0;
+    for (var i = 0; i < pools.length; i++) {
+      stakedAmount += getState().userInfo.stakedNfts[pools[i]].amount;
+    }
+    if (amount > stakedAmount) {
+      toast.error('You cannot unstake more than you own')
+      return;
+    }
+
     // Get account information and create the signing command
     let account = getState().kadenaInfo.account;
     let contract = getState().stakingContract.contract;
-    var pactCode = `(${contract}.unstake "${pool}" "${account}" ${amount}.0)`;
-    var envData = {
-      // "ks": { "keys": [pubKey], "pred": "keys-all" }
-    }
+    var pactCode = '[';
     var caps = [
       Pact.lang.mkCap('Gas', 
         'Pay for gas', 
         'coin.GAS', 
         [],
-      ),
-      Pact.lang.mkCap('Unstake', 
+      )
+    ]
+    var a = amount;
+    for (var i = 0; i < pools.length; i++) {
+      // If this pool has nothing staked, skip it, save some gas
+      let poolAmount = getState().userInfo.stakedNfts[pools[i]].amount;
+      if (poolAmount == 0) {
+        continue;
+      }
+
+      // If it does have something staked, then we unstake up to that amount
+      let toUnstake = Math.min(a, poolAmount);
+      a -= toUnstake;
+      // Add the code and the appropriate cap
+      pactCode += `(${contract}.unstake "${pools[i]}" "${account}" ${toUnstake}.0)\n`;
+      caps.push(Pact.lang.mkCap('Unstake', 
         'Unstake and claim funds', 
         `${contract}.UNSTAKE`, 
-        [pool, account, amount],
-      ),
-    ]
+        [pools[i], account, toUnstake],
+      )); 
+
+      // If we have counted up everything to unstake, we are good to go.
+      if (a == 0) {
+        break;
+      }
+    }
+    pactCode += ']';
+    var envData = {
+      // "ks": { "keys": [pubKey], "pred": "keys-all" }
+    }
     // console.log(caps);
     
     let signingCommand = createSigningCommand(getState, pactCode, envData, caps);
@@ -206,39 +246,37 @@ export const claimAll = () => {
     // Get account information and create the signing command
     let account = getState().kadenaInfo.account;
     let contract = getState().stakingContract.contract;
-    let lockedPool = import.meta.env.VITE_STAKING_POOL_LOCKED_NAME;
-    let unlockedPool = import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME;
+    let pools = [
+      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME,
+      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
+      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
+      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2,
+    ];
     let stakedNfts = getState().userInfo.stakedNfts;
-    var claimLocked = lockedPool in stakedNfts ? `(${contract}.claim "${lockedPool}" "${account}")` : "";
-    var claimUnlocked = unlockedPool in stakedNfts ? `(${contract}.claim "${unlockedPool}" "${account}")` : "";
-    var pactCode = `
-    [
-      ${claimLocked}
-      ${claimUnlocked}
-    ]
-    `;
-    // console.log(pactCode);
-    var envData = {
-      // "ks": { "keys": [pubKey], "pred": "keys-all" }
-    }
-    
+
+    // Construct the to send
+    var pactCode = '[';
     var caps = [
       Pact.lang.mkCap('Gas', 
         'Pay for gas', 
         'coin.GAS', 
         [],
       ),
-      Pact.lang.mkCap('Claim', 
-        `Claim funds from ${lockedPool}`, 
-        `${contract}.CLAIM`, 
-        [lockedPool, account],
-      ),
-      Pact.lang.mkCap('Claim', 
-        `Claim funds from ${unlockedPool}`, 
-        `${contract}.CLAIM`, 
-        [unlockedPool, account],
-      ),
     ]
+    for (var i = 0; i < pools.length; i++) {
+      if (pools[i] in stakedNfts) {
+        pactCode += `(${contract}.claim "${pools[i]}" "${account}")`;
+        caps.push(Pact.lang.mkCap('Claim', 
+          `Claim funds from ${pools[i]}`, 
+          `${contract}.CLAIM`, 
+          [pools[i], account],
+        ));
+      }
+    }
+    // console.log(pactCode);
+    var envData = {
+      // "ks": { "keys": [pubKey], "pred": "keys-all" }
+    }
     // console.log(caps);
     
     let signingCommand = createSigningCommand(getState, pactCode, envData, caps);
@@ -255,6 +293,13 @@ export const claimAll = () => {
     if (result.result.status === "success") {
       // let currStaked = getState().userInfo.stakedNfts[pool]['amount'];
       // dispatch(userSlice.actions.updateStakedNfts({ 'pool': pool, prop: 'amount', value: currStaked - amount }))
+      let now = (new Date(Date.now())).toISOString();
+      for (var i = 0; i < pools.length; i++) {
+        if (pools[i] in stakedNfts) {
+          dispatch(userSlice.actions.updateStakedNfts({ 'pool': pools[i], prop: 'stake-start-time', value: now }));
+        }
+      }
+      
       toast.update(id, { render: `Successfully claimed $DOC`, type: toast.TYPE.SUCCESS, isLoading: false, autoClose: 5000 });
     }
     else {
