@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import Tile from './Tile';
 import { useEffect, useState } from 'react';
+import { stakingPools } from '../../utils/utils';
 
 
 function MyBonds(props) {
@@ -21,15 +22,22 @@ function MyBonds(props) {
   const [unlockedPoolAmount, setUnlockedPoolAmount] = useState(0);
 
   useEffect(() => {
-    if (LOCKED_POOL_NAME in userStakedNfts) {
-      // console.log(userStakedNfts[LOCKED_POOL_NAME]['amount']);
-      setLockedPoolAmount(userStakedNfts[LOCKED_POOL_NAME]['amount']);
+    const pools = stakingPools;
+    var locked = 0;
+    var unlocked = 0;
+    for (var pool of pools) {
+      if (pool in userStakedNfts) {
+        if (poolData[pool]['is-locked-pool']) {
+          locked += userStakedNfts[pool]['amount'];
+        }
+        else {
+          unlocked += userStakedNfts[pool]['amount'];
+        }
+      }
     }
-    if (UNLOCKED_POOL_NAME in userStakedNfts) {
-      // console.log(userStakedNfts[UNLOCKED_POOL_NAME]['amount']);
-      setUnlockedPoolAmount(userStakedNfts[UNLOCKED_POOL_NAME]['amount']);
-    }
-  }, [userStakedNfts]);
+    setLockedPoolAmount(locked);
+    setUnlockedPoolAmount(unlocked);
+  }, [userStakedNfts, poolData]);
 
   return (
     <Tile 

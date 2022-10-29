@@ -13,3 +13,10 @@ export const formatCountdown = (end) => {
 
   return `${dd} days, ${hh} hours, ${mm} minutes`;
 }
+
+export const stakingPools = [
+  import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
+  import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
+  import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
+  import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
+];

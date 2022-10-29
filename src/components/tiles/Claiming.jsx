@@ -5,6 +5,7 @@ import moment from 'moment/moment';
 import TileWithAction from './TileWithAction';
 import { claimAll } from '../../connect-wallet/redux/userSlice';
 import { toast } from 'react-toastify';
+import { stakingPools } from '../../utils/utils';
 
 
 function Claiming(props) {
@@ -39,12 +40,7 @@ function Claiming(props) {
 
   function getClaimableTokens() {
     var claimable = 0.0;
-    let pools = [
-      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
-      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
-      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
-      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
-    ];
+    let pools = stakingPools;
     for (var pool in pools) {
       if (pool in userStakedNfts) {
         let apy = userStakedNfts[lockedPool]['apy'];

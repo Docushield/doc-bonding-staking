@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { createPactCommand, createSigningCommand, listen, localCommand, sendCommand, signCommand } from '../utils/utils';
 import TxRenderer from '../../components/TitleMessageRender';
 import TitleMessageRender from '../../components/TitleMessageRender';
+import { stakingPools } from '../../utils/utils';
 
 export const userSlice = createSlice({
   name: 'userInfo',
@@ -65,6 +66,7 @@ export const initUserData = () => {
     if (result.result.status === 'success') {
       let data = result.result.data;
       for (var [_, stakedNft] of Object.entries(data)) {
+        console.log(stakedNft);
         stakedNfts[stakedNft['pool-name']] = stakedNft;
       }
       // console.log('User Staked NFTS');
@@ -78,12 +80,7 @@ export const initUserData = () => {
     }
 
     // Sum up total owned
-    let pools = [
-      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME, 
-      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
-      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
-      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2
-    ];
+    let pools = stakingPools;
     var totalBonds = bondsInWallet;
     for (var poolName of pools) {
       if (poolName in stakedNfts) {
@@ -234,7 +231,7 @@ export const unstake = (pools, amount) => {
       var a = amount;
       for (var i = 0; i < pools.length; i++) {
         // If the pool doesn't have anything staked in it (doens't exist) skip it
-        if (!pools[i] in stakedNfts) {
+        if (!(pools[i] in stakedNfts)) {
           continue;
         }
 
@@ -272,12 +269,7 @@ export const claimAll = () => {
     // Get account information and create the signing command
     let account = getState().kadenaInfo.account;
     let contract = getState().stakingContract.contract;
-    let pools = [
-      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME,
-      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME,
-      import.meta.env.VITE_STAKING_POOL_LOCKED_NAME_2,
-      import.meta.env.VITE_STAKING_POOL_UNLOCKED_NAME_2,
-    ];
+    let pools = stakingPools;
     let stakedNfts = getState().userInfo.stakedNfts;
 
     // Construct the to send
